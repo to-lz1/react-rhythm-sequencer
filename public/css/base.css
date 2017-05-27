@@ -18,13 +18,13 @@ body {
 .note {
   background-image: linear-gradient(to bottom, #FFF, #CCC);
   border: 1px solid #999;
-  font-size: 1.8em;
+  font-size: 1.5em;
   height: 32px;
   width: 32px;
   margin: 0 4px;
   text-align: center;
   vertical-align: middle;
-  display:inline-flex;
+  /*display:inline-flex;*/
 }
 
 .note:focus {
@@ -69,13 +69,14 @@ body {
   width: 40px;
   text-align: center;
   margin:0px 4px;
-  font-size:1.4em;
+  /*font-size:1.4em;*/
   font-weight: bold;
 }
 
 .sequencer{
   border: 1px solid #666;
   box-shadow: 6px 6px 2px #999;
+  margin: 8px;
   padding: 16px 8px 8px;
-  width: 800px;
+  width: 840px;
 }
