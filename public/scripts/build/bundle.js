@@ -9697,10 +9697,10 @@ var Sequencer = function (_React$Component3) {
 
     _this5.state = {
       tracks: [{ name: "hihat-open",
-        steps: [null, null, null, null, null, null, null, null, null, null, 'X', null, null, null, null, null] }, { name: "hihat-close",
-        steps: ['X', 'X', 'X', null, 'X', null, 'X', null, 'X', null, null, null, 'X', null, 'X', null] }, { name: "snare",
-        steps: [null, null, null, null, 'X', null, null, null, null, null, null, null, 'X', null, null, 'X'] }, { name: "kick",
-        steps: ['X', null, null, null, null, null, null, 'X', null, 'X', 'X', null, null, 'X', null, null] }],
+        steps: [null, null, null, null, null, null, null, null, null, null, '■', null, null, null, null, null] }, { name: "hihat-close",
+        steps: ['■', '■', '■', null, '■', null, '■', null, '■', null, null, null, '■', null, '■', null] }, { name: "snare",
+        steps: [null, null, null, null, '■', null, null, null, null, null, null, null, '■', null, null, '■'] }, { name: "kick",
+        steps: ['■', null, null, null, null, null, null, '■', null, '■', '■', null, null, '■', null, null] }],
       bpm: 100.0,
       isPlaying: false,
       idxCurrent16thNote: 0,
@@ -9755,10 +9755,25 @@ var Sequencer = function (_React$Component3) {
         ),
         React.createElement(
           'div',
+          { className: 'area-shuffle' },
+          React.createElement(
+            'button',
+            { className: 'button-shuffle', onClick: function onClick() {
+                return _this6.shuffleNotes();
+              } },
+            'SHUFFLE'
+          )
+        ),
+        React.createElement(
+          'div',
           { className: 'area-bpm' },
-          'tempo: ',
-          this.state.bpm,
-          'bpm',
+          React.createElement(
+            'span',
+            { className: 'label-bpm' },
+            'tempo: ',
+            this.state.bpm,
+            'bpm'
+          ),
           React.createElement(
             'button',
             { className: 'button-bpm', onClick: function onClick() {
@@ -9785,10 +9800,29 @@ var Sequencer = function (_React$Component3) {
       }
     }
   }, {
+    key: 'shuffleNotes',
+    value: function shuffleNotes() {
+      var tr = this.state.tracks.slice();
+      tr[0].steps = this.generateSequence(0.1);
+      tr[1].steps = this.generateSequence(0.6);
+      tr[2].steps = this.generateSequence(0.25);
+      tr[3].steps = this.generateSequence(0.33);
+      this.setState({ tracks: tr });
+    }
+  }, {
+    key: 'generateSequence',
+    value: function generateSequence(density) {
+      var newSeq = Array(16).fill().map(function (x, i) {
+        var random = Math.random();
+        return random <= density ? '■' : null;
+      });
+      return newSeq;
+    }
+  }, {
     key: 'toggleStep',
     value: function toggleStep(idxTrack, idxNote) {
       var tr = this.state.tracks.slice();
-      tr[idxTrack].steps[idxNote] = tr[idxTrack].steps[idxNote] == null ? 'X' : null;
+      tr[idxTrack].steps[idxNote] = tr[idxTrack].steps[idxNote] == null ? '■' : null;
       this.setState({ tracks: tr });
     }
   }, {

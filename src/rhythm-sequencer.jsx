@@ -69,13 +69,13 @@ class Sequencer extends React.Component {
     this.state = {
       tracks: [
         {name:"hihat-open",
-         steps: [null,null,null,null,null,null,null,null,null,null,'X',null,null,null,null,null]},
+         steps: [null,null,null,null,null,null,null,null,null,null,'■',null,null,null,null,null]},
         {name:"hihat-close",
-         steps: ['X','X','X',null,'X',null,'X',null,'X',null,null,null,'X',null,'X',null]},
+         steps: ['■','■','■',null,'■',null,'■',null,'■',null,null,null,'■',null,'■',null]},
         {name:"snare",
-         steps: [null,null,null,null,'X',null,null,null,null,null,null,null,'X',null,null,'X']},
+         steps: [null,null,null,null,'■',null,null,null,null,null,null,null,'■',null,null,'■']},
         {name:"kick",
-         steps: ['X',null,null,null,null,null,null,'X',null,'X','X',null,null,'X',null,null]},
+         steps: ['■',null,null,null,null,null,null,'■',null,'■','■',null,null,'■',null,null]},
       ],
       bpm: 100.0,
       isPlaying: false,
@@ -114,8 +114,11 @@ class Sequencer extends React.Component {
             {this.state.isPlaying ? '■STOP' : '▶PLAY!'}
           </button>
         </div>
+        <div className="area-shuffle">
+          <button className="button-shuffle" onClick={()=>this.shuffleNotes()}>SHUFFLE</button>
+        </div>
         <div className="area-bpm">
-          tempo: {this.state.bpm}bpm
+          <span className="label-bpm">tempo: {this.state.bpm}bpm</span>
           <button className="button-bpm" onClick={()=>this.changeTempo(-4)}>-</button>
           <button className="button-bpm" onClick={()=>this.changeTempo(4)}>+</button>
         </div>
@@ -129,10 +132,27 @@ class Sequencer extends React.Component {
       this.setState({bpm: newBpm});
     }
   }
+  
+  shuffleNotes(){
+    let tr = this.state.tracks.slice();
+    tr[0].steps = this.generateSequence(0.1);
+    tr[1].steps = this.generateSequence(0.6);
+    tr[2].steps = this.generateSequence(0.25);
+    tr[3].steps = this.generateSequence(0.33);
+    this.setState({tracks: tr});
+  }
+
+  generateSequence(density){
+    var newSeq = Array(16).fill().map((x,i) =>{
+      let random = Math.random();
+      return random <= density ? '■' : null;
+    });
+    return newSeq;
+  }
 
   toggleStep(idxTrack, idxNote) {
     let tr = this.state.tracks.slice();
-    tr[idxTrack].steps[idxNote] = tr[idxTrack].steps[idxNote] == null ? 'X' : null;
+    tr[idxTrack].steps[idxNote] = tr[idxTrack].steps[idxNote] == null ? '■' : null;
     this.setState({tracks: tr});
   }
 

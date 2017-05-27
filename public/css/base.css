@@ -16,9 +16,9 @@ body {
 }
 
 .note {
-  background-image: linear-gradient(to bottom, #FFF, #CCC);
+  background-color: #FFF;
   border: 1px solid #999;
-  font-size: 1.5em;
+  /*font-size: 1.5em;*/
   height: 32px;
   width: 32px;
   margin: 0 4px;
@@ -51,10 +51,25 @@ body {
   display: inline-block;
   min-width: 120px;
   text-align: center;
-  margin:4px 0;
+  margin:4px;
 }
 
 .button-play{
+  background-color: #FFF;
+  width: 100px;
+  height: 32px;
+  text-align: center;
+  font-size:1.2em;
+}
+.area-shuffle{
+  display: inline-block;
+  min-width: 120px;
+  text-align: center;
+  margin:4px;
+}
+
+.button-shuffle{
+  background-color: #FFF;
   width: 100px;
   height: 32px;
   text-align: center;
@@ -63,6 +78,7 @@ body {
 
 .area-bpm{
   display: inline-block;
+  margin:4px 12px;
 }
 
 .button-bpm{
@@ -73,7 +89,13 @@ body {
   font-weight: bold;
 }
 
+.label-bpm{
+  display: inline-block;
+  min-width: 100px;
+}
+
 .sequencer{
+  background-image: linear-gradient(to bottom, #FFF, #DDD);
   border: 1px solid #666;
   box-shadow: 6px 6px 2px #999;
   margin: 8px;
