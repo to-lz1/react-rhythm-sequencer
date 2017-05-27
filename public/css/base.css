@@ -1,0 +1,81 @@
+body {
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 20px;
+}
+
+.track{
+  display: block;
+  margin: 4px 0;
+  padding: 0 8px;
+}
+.track-name{
+  display: inline-block;
+  min-width: 120px;
+  margin:0 8px;
+  font-weight: bold;
+}
+
+.note {
+  background-image: linear-gradient(to bottom, #FFF, #CCC);
+  border: 1px solid #999;
+  font-size: 1.8em;
+  height: 32px;
+  width: 32px;
+  margin: 0 4px;
+  text-align: center;
+  vertical-align: middle;
+  display:inline-flex;
+}
+
+.note:focus {
+  outline: none;
+}
+
+.led{
+  background-color: #666;
+  height: 8px;
+  width: 32px;
+  margin: 0 4px;
+  display:inline-flex;
+}
+
+.led:focus {
+  outline: none;
+}
+
+.led-playing {
+  background-color: #99F;
+}
+
+.area-play{
+  display: inline-block;
+  min-width: 120px;
+  text-align: center;
+  margin:4px 0;
+}
+
+.button-play{
+  width: 100px;
+  height: 32px;
+  text-align: center;
+  font-size:1.2em;
+}
+
+.area-bpm{
+  display: inline-block;
+}
+
+.button-bpm{
+  width: 40px;
+  text-align: center;
+  margin:0px 4px;
+  font-size:1.4em;
+  font-weight: bold;
+}
+
+.sequencer{
+  border: 1px solid #666;
+  box-shadow: 6px 6px 2px #999;
+  padding: 16px 8px 8px;
+  width: 800px;
+}
