@@ -8,7 +8,8 @@
     "body-parser": "^1.4.3",
     "express": "^4.4.5",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "react-toolbox": "^2.0.0-beta.12"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -16,6 +17,8 @@
     "babel-preset-env": "^1.5.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.3",
+    "style-loader": "^0.18.1",
     "webpack": "^2.6.1"
   },
   "scripts": {

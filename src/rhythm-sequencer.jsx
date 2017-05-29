@@ -1,6 +1,8 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var BufferLoader = require('./bufferloader.js');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import BufferLoader from './bufferloader.js';
+import Slider from 'react-toolbox/lib/slider';
+
 
 // スケジューリング間隔（milliseconds, handled by javascript clock)
 var SCHEDULER_TICK = 25.0;
@@ -77,11 +79,12 @@ class Sequencer extends React.Component {
         {name:"kick",
          steps: ['■',null,null,null,null,null,null,'■',null,'■','■',null,null,'■',null,null]},
       ],
-      bpm: 100.0,
+      bpm: 100,
       isPlaying: false,
       idxCurrent16thNote: 0,
       startTime: 0.0,
-      nextNoteTime: 0.0
+      nextNoteTime: 0.0,
+      swing: 0
     };
     timerWorker.onmessage = function(e) {
       if(e.data=="tick"){
@@ -118,21 +121,29 @@ class Sequencer extends React.Component {
           <button className="button-shuffle" onClick={()=>this.shuffleNotes()}>SHUFFLE</button>
         </div>
         <div className="area-bpm">
-          <span className="label-bpm">tempo: {this.state.bpm}bpm</span>
-          <button className="button-bpm" onClick={()=>this.changeTempo(-4)}>-</button>
-          <button className="button-bpm" onClick={()=>this.changeTempo(4)}>+</button>
+          <span className="label-bpm">[bpm]</span>
+          <div style={{display: 'inline-block', width: '200px'}}>
+            <Slider min={40} max={250} step={1}
+              editable pinned value={this.state.bpm} onChange={this.handleSliderChange.bind(this, 'bpm')}/>
+          </div>
+        </div>
+        <div className="area-swing">
+          <span className="label-swing">[swing]</span>
+          <div style={{display: 'inline-block', width: '200px'}}>
+            <Slider min={0} max={100} step={1}
+              editable pinned value={this.state.swing} onChange={this.handleSliderChange.bind(this, 'swing')}/>
+          </div>
         </div>
       </div>
     );
   }
 
-  changeTempo(delta){
-    let newBpm = this.state.bpm + delta;
-    if(40 <= newBpm && newBpm <=240){
-      this.setState({bpm: newBpm});
+    handleSliderChange(slider, value){
+      const newState = {};
+      newState[slider] = value;
+      this.setState(newState);
     }
-  }
-  
+
   shuffleNotes(){
     let tr = this.state.tracks.slice();
     tr[0].steps = this.generateSequence(0.1);
@@ -194,8 +205,11 @@ class Sequencer extends React.Component {
 
   nextNote() {
       let secondsPerBeat = 60.0 / this.state.bpm;
+      let noteRateWithSwingCalc = 
+        this.state.idxCurrent16thNote % 2 == 0 ?
+        1/4 + 1/1200*this.state.swing : 1/4 - 1/1200*this.state.swing;
       this.setState({
-        nextNoteTime: this.state.nextNoteTime + 0.25 * secondsPerBeat,
+        nextNoteTime: this.state.nextNoteTime + noteRateWithSwingCalc * secondsPerBeat,
         idxCurrent16thNote: (this.state.idxCurrent16thNote + 1) % 16,
     });
   }
