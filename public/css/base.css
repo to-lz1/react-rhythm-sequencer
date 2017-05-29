@@ -61,6 +61,7 @@ body {
   text-align: center;
   font-size:1.2em;
 }
+
 .area-shuffle{
   display: inline-block;
   min-width: 120px;
@@ -80,17 +81,11 @@ body {
   display: inline-block;
   margin:4px 12px;
 }
+
 .area-swing{
   display: inline-block;
   margin:4px 12px;
 }
-/*.button-bpm{
-  width: 40px;
-  text-align: center;
-  margin:0px 4px;
-  font-weight: bold;
-}*/
-
 
 .sequencer{
   background-image: linear-gradient(to bottom, #FFF, #DDD);
