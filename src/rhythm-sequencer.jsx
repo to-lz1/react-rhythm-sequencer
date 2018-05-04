@@ -41,7 +41,7 @@ class Track extends React.Component {
         <div className="track">
           <span className="track-name">{this.props.name}</span>
           {Array(16).fill().map((x,i) =>
-            <Square 
+            <Square
               key={i}
               marking={this.props.squares[i]}
               onClick={()=>this.props.handler(i)}
@@ -98,7 +98,7 @@ class Sequencer extends React.Component {
       <div className="sequencer">
         <div className="area-tracks">
           {Array(4).fill().map((x,i) =>
-            <Track 
+            <Track
               key={i}
               name={this.state.tracks[i].name}
               squares={this.state.tracks[i].steps}
@@ -169,18 +169,20 @@ class Sequencer extends React.Component {
 
   togglePlayButton(){
       if (this.state.isPlaying == false) {
+        audioContext.resume().then(() => {
           timerWorker.postMessage("start");
           this.setState({
             // to avoid first note delay
             nextNoteTime: audioContext.currentTime + SCHEDULER_TICK/1000,
             isPlaying: true,
           });
+        });
       } else {
-          timerWorker.postMessage("stop");
-          this.setState({
-            idxCurrent16thNote: 0,
-            isPlaying: false,
-          });
+        timerWorker.postMessage("stop");
+        this.setState({
+          idxCurrent16thNote: 0,
+          isPlaying: false,
+        });
       }
   }
 
@@ -205,7 +207,7 @@ class Sequencer extends React.Component {
 
   nextNote() {
       let secondsPerBeat = 60.0 / this.state.bpm;
-      let noteRateWithSwingCalc = 
+      let noteRateWithSwingCalc =
         this.state.idxCurrent16thNote % 2 == 0 ?
         1/4 + 1/1200*this.state.swing : 1/4 - 1/1200*this.state.swing;
       this.setState({
