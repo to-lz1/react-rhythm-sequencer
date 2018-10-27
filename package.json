@@ -12,6 +12,7 @@
     "react-toolbox": "^2.0.0-beta.13"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
