@@ -8,11 +8,11 @@ demo: [https://to-lz1.github.io/react-rhythm-sequencer/](https://to-lz1.github.i
 * make bundle.js
 
 ```
-npm run build
+yarn build
 ```
 
 * host on local server
 
 ```
-npm start
+yarn start
 ```
