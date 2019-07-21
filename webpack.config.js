@@ -1,4 +1,5 @@
 module.exports = {
+  mode: 'development',
   entry: './src/rhythm-sequencer.jsx',
   output: {
     path: __dirname + '/public/scripts/build',
@@ -8,14 +9,17 @@ module.exports = {
     extensions: ['.js', '.jsx']
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
         query: {
           cacheDirectory: true,
-          presets: ['react', 'es2015']
+          presets: [
+            "@babel/preset-env",
+            "@babel/react"
+          ]
         }
       },
       {
