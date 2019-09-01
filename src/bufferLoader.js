@@ -6,13 +6,13 @@ export default class BufferLoader {
     this.bufferList = new Array();
   }
 
-  loadBuffer(url) {
+  loadBuffer(url, index) {
     const request = new XMLHttpRequest();
     request.open("GET", url, true);
     request.responseType = "arraybuffer";
     request.onload = () => {
       this.context.decodeAudioData(request.response).then(
-        (buffer) =>  this.bufferList.push(buffer)
+        (buffer) =>  this.bufferList[index] = buffer
       );
     }
     request.onerror = (e) => {
@@ -22,6 +22,6 @@ export default class BufferLoader {
   }
 
   load() {
-    this.urlList.forEach(url => this.loadBuffer(url));
+    this.urlList.forEach((url, i) => this.loadBuffer(url, i));
   }
 };
