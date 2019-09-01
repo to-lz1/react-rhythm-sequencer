@@ -1,9 +1,12 @@
 module.exports = {
   mode: 'development',
-  entry: './src/rhythm-sequencer.jsx',
+  entry: {
+    main: './src/rhythmSequencer.jsx',
+    worker: './src/timerWorker.js'
+  },
   output: {
     path: __dirname + '/public/scripts/build',
-    filename: 'bundle.js'
+    filename: '[name].js'
   },
   resolve: {
     extensions: ['.js', '.jsx']

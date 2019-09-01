@@ -1,71 +1,36 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import BufferLoader from './bufferloader.js';
+import BufferLoader from './bufferLoader';
 import Slider from 'react-toolbox/lib/slider';
-
+import Track from './track';
+import LEDLine from './ledLine';
 
 // スケジューリング間隔（milliseconds, handled by javascript clock)
-var SCHEDULER_TICK = 25.0;
+const SCHEDULER_TICK = 25.0;
 // スケジューリング先読み範囲（sec, handled by WebAudio clock)
-var SCHEDULER_LOOK_AHEAD = 0.1;
+const SCHEDULER_LOOK_AHEAD = 0.1;
 
 //audio context initialization
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
-var audioContext = new AudioContext();
+const audioContext = new AudioContext();
 
-//loadimg audio buffers
-var bufferLoader = new BufferLoader(
+//loading audio buffers
+const bufferLoader = new BufferLoader(
   audioContext,
-  ['sounds/hihat_open.wav',
+  [
+    'sounds/hihat_open.wav',
     'sounds/hihat_close.wav',
     'sounds/snare.wav',
-    'sounds/kick.wav'],
-  ()=>console.log('audio resource loading finished.'));
+    'sounds/kick.wav'
+  ]
+);
 bufferLoader.load();
 
 // run a worker process to schedule next note(s)
-var timerWorker = new Worker('scripts/timerworker.js');
+const timerWorker = new Worker('scripts/build/worker.js');
 timerWorker.postMessage({"interval": SCHEDULER_TICK});
 
-function Square (props) {
-    return (
-        <button className="note" onClick={()=>props.onClick()}>
-            {props.marking}
-        </button>
-    );
-}
-
-class Track extends React.Component {
-  render() {
-    return (
-        <div className="track">
-          <span className="track-name">{this.props.name}</span>
-          {Array(16).fill().map((x,i) =>
-            <Square
-              key={i}
-              marking={this.props.squares[i]}
-              onClick={()=>this.props.handler(i)}
-            />)}
-        </div>
-    );
-  }
-}
-
-class LEDLine extends React.Component {
-  render() {
-    return (
-        <div className="track">
-          <span className="track-name"></span>
-          {Array(16).fill().map((x,i) =>
-          <button className={
-            (this.props.isPlaying && this.props.idxCurrent16thNote == (i+1)%16)? "led  led-playing" : "led"
-            } key={i} disabled />)}
-        </div>
-    );
-  }
-}
-
-class Sequencer extends React.Component {
+class RhythmSequencer extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -83,14 +48,14 @@ class Sequencer extends React.Component {
       isPlaying: false,
       idxCurrent16thNote: 0,
       startTime: 0.0,
-      nextNoteTime: 0.0,
+      noteTime: 0.0,
       swing: 0
     };
-    timerWorker.onmessage = function(e) {
-      if(e.data=="tick"){
-            this.schedule();
+    timerWorker.onmessage = ((e) => {
+      if (e.data === "tick") {
+        this.schedule();
       }
-    }.bind(this);
+    }).bind(this);
   }
 
   render() {
@@ -138,11 +103,11 @@ class Sequencer extends React.Component {
     );
   }
 
-    handleSliderChange(slider, value){
-      const newState = {};
-      newState[slider] = value;
-      this.setState(newState);
-    }
+  handleSliderChange(slider, value){
+    const newState = {};
+    newState[slider] = value;
+    this.setState(newState);
+  }
 
   shuffleNotes(){
     let tr = this.state.tracks.slice();
@@ -154,7 +119,7 @@ class Sequencer extends React.Component {
   }
 
   generateSequence(density){
-    var newSeq = Array(16).fill().map((x,i) =>{
+    const newSeq = Array(16).fill().map((x,i) =>{
       let random = Math.random();
       return random <= density ? '■' : null;
     });
@@ -168,12 +133,12 @@ class Sequencer extends React.Component {
   }
 
   togglePlayButton(){
-      if (this.state.isPlaying == false) {
+      if (this.state.isPlaying === false) {
         audioContext.resume().then(() => {
           timerWorker.postMessage("start");
           this.setState({
             // to avoid first note delay
-            nextNoteTime: audioContext.currentTime + SCHEDULER_TICK/1000,
+            noteTime: audioContext.currentTime + SCHEDULER_TICK/1000,
             isPlaying: true,
           });
         });
@@ -187,17 +152,16 @@ class Sequencer extends React.Component {
   }
 
   schedule() {
-    while (this.state.nextNoteTime < audioContext.currentTime + SCHEDULER_LOOK_AHEAD ) {
-        this.scheduleSound( this.state.idxCurrent16thNote, this.state.nextNoteTime );
-        this.nextNote();
+    while (this.state.noteTime < audioContext.currentTime + SCHEDULER_LOOK_AHEAD ) {
+        this.scheduleSound( this.state.idxCurrent16thNote, this.state.noteTime );
+        this.setNextNoteTime();
     }
   }
 
   scheduleSound(idxNote, time) {
-      this.state.tracks.map((tr, i) =>{
-        if(tr.steps[idxNote])
-        {
-            let source = audioContext.createBufferSource();
+      this.state.tracks.forEach((tr, i) =>{
+        if (tr.steps[idxNote]) {
+            const source = audioContext.createBufferSource();
             source.buffer = bufferLoader.bufferList[i];
             source.connect(audioContext.destination);
             source.start(time);
@@ -205,13 +169,13 @@ class Sequencer extends React.Component {
       });
   }
 
-  nextNote() {
-      let secondsPerBeat = 60.0 / this.state.bpm;
-      let noteRateWithSwingCalc =
-        this.state.idxCurrent16thNote % 2 == 0 ?
-        1/4 + 1/1200*this.state.swing : 1/4 - 1/1200*this.state.swing;
+  setNextNoteTime() {
+      const secondsPerNote = 15.0 / this.state.bpm; // 60[seconds] / bpm / 4[notes per beat]
+      const swingRateCorrection =
+        this.state.idxCurrent16thNote % 2 === 0 ?
+        1 + this.state.swing/(100 * 3) : 1 - this.state.swing/(100 * 3);
       this.setState({
-        nextNoteTime: this.state.nextNoteTime + noteRateWithSwingCalc * secondsPerBeat,
+        noteTime: this.state.noteTime + secondsPerNote * swingRateCorrection,
         idxCurrent16thNote: (this.state.idxCurrent16thNote + 1) % 16,
     });
   }
@@ -219,6 +183,6 @@ class Sequencer extends React.Component {
 // ========================================
 
 ReactDOM.render(
-  <Sequencer />,
+  <RhythmSequencer />,
   document.getElementById('root')
 );
