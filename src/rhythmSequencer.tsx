@@ -10,21 +10,22 @@ const SCHEDULER_TICK = 25.0;
 // スケジューリング先読み範囲（sec, handled by WebAudio clock)
 const SCHEDULER_LOOK_AHEAD = 0.1;
 
-//audio context initialization
-window.AudioContext = window.AudioContext;
-const audioContext = new AudioContext();
+let audioContext: AudioContext;
+let bufferLoader: BufferLoader;
 
-//loading audio buffers
-const bufferLoader = new BufferLoader(
-  audioContext,
-  [
-    'sounds/hihat_open.wav',
-    'sounds/hihat_close.wav',
-    'sounds/snare.wav',
-    'sounds/kick.wav'
-  ]
-);
-bufferLoader.load();
+const initAudioContext = () => {
+  audioContext = new AudioContext();
+  bufferLoader = new BufferLoader(
+    audioContext,
+    [
+      'sounds/hihat_open.wav',
+      'sounds/hihat_close.wav',
+      'sounds/snare.wav',
+      'sounds/kick.wav'
+    ]
+  );
+  bufferLoader.load();
+}
 
 // run a worker process to schedule next note(s)
 const timerWorker = new Worker(new URL('./timerWorker.ts', import.meta.url));
@@ -135,6 +136,9 @@ class RhythmSequencer extends React.Component<any, any> {
   }
 
   togglePlayButton(){
+      if (!audioContext) {
+        initAudioContext();
+      }
       if (this.state.isPlaying === false) {
         audioContext.resume().then(() => {
           timerWorker.postMessage("start");
