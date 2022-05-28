@@ -11,7 +11,7 @@ const SCHEDULER_TICK = 25.0;
 const SCHEDULER_LOOK_AHEAD = 0.1;
 
 //audio context initialization
-window.AudioContext = window.AudioContext || window.webkitAudioContext;
+window.AudioContext = window.AudioContext;
 const audioContext = new AudioContext();
 
 //loading audio buffers
@@ -27,13 +27,13 @@ const bufferLoader = new BufferLoader(
 bufferLoader.load();
 
 // run a worker process to schedule next note(s)
-const timerWorker = new Worker(new URL('./timerWorker.js', import.meta.url));
+const timerWorker = new Worker(new URL('./timerWorker.ts', import.meta.url));
 console.log(timerWorker);
 timerWorker.postMessage({"interval": SCHEDULER_TICK});
 
-class RhythmSequencer extends React.Component {
-  constructor() {
-    super();
+class RhythmSequencer extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
     this.state = {
       tracks: [
         {name:"hihat-open",
@@ -52,8 +52,8 @@ class RhythmSequencer extends React.Component {
       noteTime: 0.0,
       swing: 0
     };
-    timerWorker.onmessage = ((e) => {
-      if (e.data === "tick") {
+    timerWorker.onmessage = (({data}: {data: string}) => {
+      if (data === "tick") {
         this.schedule();
       }
     }).bind(this);
@@ -63,7 +63,7 @@ class RhythmSequencer extends React.Component {
     return (
       <div className="sequencer">
         <div className="area-tracks">
-          {Array(4).fill().map((x,i) =>
+          {[...Array(4).keys()].map((_,i) =>
             <Track
               key={i}
               name={this.state.tracks[i].name}
@@ -104,12 +104,12 @@ class RhythmSequencer extends React.Component {
     );
   }
 
-  handleBpmSliderChange = (e) => {
-    this.setState({bpm: e.target.value});
+  handleBpmSliderChange = (e: Event, value: number | number[], activeThumb: number) => {
+    this.setState({bpm: value});
   }
 
-  handleSwingSliderChange = (e) => {
-    this.setState({swing: e.target.value});
+  handleSwingSliderChange = (e: Event, value: number | number[], activeThumb: number) => {
+    this.setState({swing: value});
   }
 
   shuffleNotes(){
@@ -121,15 +121,15 @@ class RhythmSequencer extends React.Component {
     this.setState({tracks: tr});
   }
 
-  generateSequence(density){
-    const newSeq = Array(16).fill().map((x,i) =>{
+  generateSequence(density: number){
+    const newSeq = [...Array(16).keys()].map((x, i) =>{
       let random = Math.random();
       return random <= density ? '■' : null;
     });
     return newSeq;
   }
 
-  toggleStep(idxTrack, idxNote) {
+  toggleStep(idxTrack: number, idxNote: number) {
     let tr = this.state.tracks.slice();
     tr[idxTrack].steps[idxNote] = tr[idxTrack].steps[idxNote] == null ? '■' : null;
     this.setState({tracks: tr});
@@ -161,8 +161,8 @@ class RhythmSequencer extends React.Component {
     }
   }
 
-  scheduleSound(idxNote, time) {
-      this.state.tracks.forEach((tr, i) =>{
+  scheduleSound(idxNote: number, time: number) {
+      this.state.tracks.forEach((tr: any, i: number) =>{
         if (tr.steps[idxNote]) {
             const source = audioContext.createBufferSource();
             source.buffer = bufferLoader.bufferList[i];

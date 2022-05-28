@@ -1,11 +1,17 @@
 import React from "react";
 
-export default class LEDLine extends React.Component {
+interface LEDLineProps {
+    isPlaying: boolean;
+    idxCurrent16thNote: number;
+}
+
+export default class LEDLine extends React.Component<LEDLineProps> {
+
     render() {
         return (
         <div className="track">
             <span className="track-name"></span>
-            { Array(16).fill().map((_, i) =>
+            { [...Array(16).keys()].map((_, i) =>
                 <button
                 className={ this.isLighted(i) ? "led  led-playing" : "led" }
                 key={i} disabled
@@ -15,7 +21,7 @@ export default class LEDLine extends React.Component {
         );
     }
 
-    isLighted(index) {
+    isLighted(index: number) {
         return this.props.isPlaying && this.props.idxCurrent16thNote === (index + 1) % 16;
     }
 }
