@@ -5,16 +5,12 @@
   "license": "MIT",
   "description": "Rhythm sequencer powered by React.js, and Web Audio API.",
   "dependencies": {
-    "@babel/core": "^7.0.0",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/material": "^5.8.1",
-    "body-parser": "^1.18.3",
     "classnames": "^2.2.0",
-    "prop-types": "^15.6.0",
     "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-transition-group": "^2.2.0"
+    "react-dom": "^18.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.9",
@@ -31,10 +27,11 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "lint": "eslint src/{*.tsx,*.ts} --fix",
     "preview": "vite preview",
+    "build": "vite build",
     "start": "node server.js",
-    "lint": "eslint src/{*.tsx,*.ts} --fix"
+    "stage": "yarn install --frozen-lockfile && vite build"
   },
   "repository": {
     "type": "git",
