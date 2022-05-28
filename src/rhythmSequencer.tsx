@@ -28,7 +28,6 @@ bufferLoader.load();
 
 // run a worker process to schedule next note(s)
 const timerWorker = new Worker(new URL('./timerWorker.ts', import.meta.url));
-console.log(timerWorker);
 timerWorker.postMessage({"interval": SCHEDULER_TICK});
 
 class RhythmSequencer extends React.Component<any, any> {
