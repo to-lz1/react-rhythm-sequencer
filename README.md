@@ -1,18 +1,26 @@
 # react-rhythm-sequencer
-Rhythm sequencer powered by React.js, and Web Audio API.
+Rhythm sequencer powered by React, and Web Audio API.
 
 demo: [https://to-lz1.github.io/react-rhythm-sequencer/](https://to-lz1.github.io/react-rhythm-sequencer/)
 
-## scripts for development
 
-* make bundle.js
+## development
+
+### prerequisites
+
+We use these tools for package management and bundling.
+
+- yarn
+- vite
+
+### run dev environment
 
 ```
-yarn build
+yarn dev
 ```
 
-* host on local server
+### build and host on local express server
 
 ```
-yarn start
+yarn build && yarn start
 ```
