@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import BufferLoader from './bufferLoader';
-import Slider from 'react-toolbox/lib/slider';
+import Slider from '@mui/material/Slider';
 import Track from './track';
 import LEDLine from './ledLine';
 
@@ -27,7 +27,8 @@ const bufferLoader = new BufferLoader(
 bufferLoader.load();
 
 // run a worker process to schedule next note(s)
-const timerWorker = new Worker('scripts/build/worker.js');
+const timerWorker = new Worker(new URL('./timerWorker.js', import.meta.url));
+console.log(timerWorker);
 timerWorker.postMessage({"interval": SCHEDULER_TICK});
 
 class RhythmSequencer extends React.Component {
@@ -86,27 +87,29 @@ class RhythmSequencer extends React.Component {
           <button className="button-shuffle" onClick={()=>this.shuffleNotes()}>SHUFFLE</button>
         </div>
         <div className="area-bpm">
-          <span className="label-bpm">[bpm]</span>
-          <div style={{display: 'inline-block', width: '200px'}}>
-            <Slider min={40} max={250} step={1}
-              editable pinned value={this.state.bpm} onChange={this.handleSliderChange.bind(this, 'bpm')}/>
+          <label className="label-bpm">[bpm]</label>
+          <div style={{width: '200px', padding: '0 16px'}}>
+            <Slider min={40} max={250} step={1} size="medium"
+              defaultValue={100} valueLabelDisplay="auto" onChange={this.handleBpmSliderChange}/>
           </div>
         </div>
         <div className="area-swing">
           <span className="label-swing">[swing]</span>
-          <div style={{display: 'inline-block', width: '200px'}}>
-            <Slider min={0} max={100} step={1}
-              editable pinned value={this.state.swing} onChange={this.handleSliderChange.bind(this, 'swing')}/>
+          <div style={{width: '200px', padding: '0 16px'}}>
+            <Slider min={0} max={100} step={1} size="medium"
+              defaultValue={0} valueLabelDisplay="auto" onChange={this.handleSwingSliderChange}/>
           </div>
         </div>
       </div>
     );
   }
 
-  handleSliderChange(slider, value){
-    const newState = {};
-    newState[slider] = value;
-    this.setState(newState);
+  handleBpmSliderChange = (e) => {
+    this.setState({bpm: e.target.value});
+  }
+
+  handleSwingSliderChange = (e) => {
+    this.setState({swing: e.target.value});
   }
 
   shuffleNotes(){

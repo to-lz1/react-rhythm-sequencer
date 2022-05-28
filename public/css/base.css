@@ -78,13 +78,15 @@ body {
 }
 
 .area-bpm{
-  display: inline-block;
-  margin:4px 12px;
+  display: inline-flex;
+  align-items: center;
+  margin: 4px;
 }
 
 .area-swing{
-  display: inline-block;
-  margin:4px 12px;
+  display: inline-flex;
+  align-items: center;
+  margin: 4px;
 }
 
 .sequencer{
