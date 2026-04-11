@@ -26,8 +26,7 @@
     "dev": "vite",
     "lint": "eslint src/* --fix",
     "preview": "vite preview",
-    "build": "vite build",
-    "start": "node server.js"
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
@@ -40,6 +39,6 @@
   ],
   "author": "to-lz1",
   "engines": {
-    "node": ">=18.1.0"
+    "node": ">=25.9.0"
   }
 }
