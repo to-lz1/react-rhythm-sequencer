@@ -1,8 +1,8 @@
 # react-rhythm-sequencer
+
 Rhythm sequencer powered by React, and Web Audio API.
 
 demo: [https://to-lz1.github.io/react-rhythm-sequencer/](https://to-lz1.github.io/react-rhythm-sequencer/)
-
 
 ## development
 
@@ -10,17 +10,20 @@ demo: [https://to-lz1.github.io/react-rhythm-sequencer/](https://to-lz1.github.i
 
 We use these tools for package management and bundling.
 
-- yarn
+- mise
+- pnpm
 - vite
+
+### setup
+
+```
+mise install
+pnpm install
+```
 
 ### run dev environment
 
 ```
-yarn dev
-```
 
-### build and host on local express server
-
-```
-yarn build && yarn start
+pnpm dev
 ```

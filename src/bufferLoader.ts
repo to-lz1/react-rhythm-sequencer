@@ -11,12 +11,12 @@ export default class BufferLoader {
 
   loadBuffer(url: string, index: number) {
     const request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    request.responseType = 'arraybuffer';
+    request.open("GET", url, true);
+    request.responseType = "arraybuffer";
     request.onload = () => {
-      this.context.decodeAudioData(request.response).then(
-          (buffer: AudioBuffer) => this.bufferList[index] = buffer,
-      );
+      this.context
+        .decodeAudioData(request.response)
+        .then((buffer: AudioBuffer) => (this.bufferList[index] = buffer));
     };
     request.onerror = (e) => {
       console.error(`XHR Request error: ${e}`);
@@ -27,4 +27,4 @@ export default class BufferLoader {
   load() {
     this.urlList.forEach((url, i) => this.loadBuffer(url, i));
   }
-};
+}
