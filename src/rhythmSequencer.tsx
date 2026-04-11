@@ -39,7 +39,7 @@ class RhythmSequencer extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
-      /* eslint-disable max-len */
+       
       tracks: [
         {
           name: 'hihat-open',
@@ -58,7 +58,7 @@ class RhythmSequencer extends React.Component<any, any> {
           steps: ['■', null, null, null, null, null, null, '■', null, '■', '■', null, null, '■', null, null],
         },
       ],
-      /* eslint-enable max-len */
+       
       bpm: 100,
       isPlaying: false,
       idxCurrent16thNote: 0,
@@ -134,11 +134,11 @@ class RhythmSequencer extends React.Component<any, any> {
     );
   }
 
-  handleBpmSliderChange = (e: Event, value: number | number[], _: number) => {
+  handleBpmSliderChange = (e: Event, value: number | number[]) => {
     this.setState({bpm: value});
   };
 
-  handleSwingSliderChange = (e: Event, value: number | number[], _: number) => {
+  handleSwingSliderChange = (e: Event, value: number | number[]) => {
     this.setState({swing: value});
   };
 
@@ -152,7 +152,7 @@ class RhythmSequencer extends React.Component<any, any> {
   }
 
   generateSequence(density: number) {
-    const newSeq = [...Array(16).keys()].map((x, i) =>{
+    const newSeq = [...Array(16).keys()].map(() =>{
       const random = Math.random();
       return random <= density ? '■' : null;
     });
