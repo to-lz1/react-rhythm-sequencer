@@ -31,15 +31,25 @@ const initAudioContext = () => {
 const timerWorker = new Worker(new URL('./timerWorker.ts', import.meta.url));
 timerWorker.postMessage({'interval': SCHEDULER_TICK});
 
-class RhythmSequencer extends React.Component<any, any> {
+type EmptyProps = Record<string, never>;
+
+interface TrackData { name: string, steps: (string | null)[] }
+interface RhythmSequenserState {
+  tracks: TrackData[];
+  bpm: number;
+  isPlaying: boolean;
+  idxCurrent16thNote: number;
+  swing: number;
+}
+
+class RhythmSequencer extends React.Component<EmptyProps, RhythmSequenserState> {
 
   #currentNoteTime: number = 0
   #current16thNote: number = 0
 
-  constructor(props: any) {
-    super(props);
+  constructor() {
+    super({});
     this.state = {
-       
       tracks: [
         {
           name: 'hihat-open',
@@ -58,12 +68,9 @@ class RhythmSequencer extends React.Component<any, any> {
           steps: ['■', null, null, null, null, null, null, '■', null, '■', '■', null, null, '■', null, null],
         },
       ],
-       
       bpm: 100,
       isPlaying: false,
       idxCurrent16thNote: 0,
-      startTime: 0.0,
-      noteTime: 0.0,
       swing: 0,
     };
     timerWorker.onmessage = (({data}: {data: string}) => {
@@ -134,12 +141,14 @@ class RhythmSequencer extends React.Component<any, any> {
     );
   }
 
-  handleBpmSliderChange = (e: Event, value: number | number[]) => {
-    this.setState({bpm: value});
+  handleBpmSliderChange = (_: Event, value: number | number[]) => {
+    const val = typeof value === "number" ? value : value[0];
+    this.setState({bpm: val});
   };
 
-  handleSwingSliderChange = (e: Event, value: number | number[]) => {
-    this.setState({swing: value});
+  handleSwingSliderChange = (_: Event, value: number | number[]) => {
+    const val = typeof value === "number" ? value : value[0];
+    this.setState({swing: val});
   };
 
   shuffleNotes() {
@@ -195,7 +204,7 @@ class RhythmSequencer extends React.Component<any, any> {
   }
 
   scheduleSound(idxNote: number, time: number) {
-    this.state.tracks.forEach((tr: any, i: number) =>{
+    this.state.tracks.forEach((tr: TrackData, i: number) =>{
       if (tr.steps[idxNote]) {
         const source = audioContext.createBufferSource();
         source.buffer = bufferLoader.bufferList[i];

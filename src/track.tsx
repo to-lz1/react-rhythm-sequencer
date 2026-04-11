@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface SquareProps {
-    marking: string;
+    marking: string | null;
     onClick: () => void;
 }
 const Square: React.FC<SquareProps> = (props) => {
@@ -14,7 +14,7 @@ const Square: React.FC<SquareProps> = (props) => {
 
 interface TrackProps {
     name: string;
-    squares: string[];
+    squares: (string | null)[];
     handler: (i: number) => void;
 }
 
