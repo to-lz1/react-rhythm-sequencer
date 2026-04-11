@@ -10,17 +10,11 @@ demo: [https://to-lz1.github.io/react-rhythm-sequencer/](https://to-lz1.github.i
 
 We use these tools for package management and bundling.
 
-- yarn
+- pnpm
 - vite
 
 ### run dev environment
 
 ```
-yarn dev
-```
-
-### build and host on local express server
-
-```
-yarn build && yarn start
+pnpm dev
 ```
