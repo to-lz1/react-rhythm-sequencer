@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import BufferLoader from './bufferLoader';
 import Slider from '@mui/material/Slider';
 import Track from './track';
@@ -32,6 +32,10 @@ const timerWorker = new Worker(new URL('./timerWorker.ts', import.meta.url));
 timerWorker.postMessage({'interval': SCHEDULER_TICK});
 
 class RhythmSequencer extends React.Component<any, any> {
+
+  #currentNoteTime: number = 0
+  #current16thNote: number = 0
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -169,28 +173,25 @@ class RhythmSequencer extends React.Component<any, any> {
     if (this.state.isPlaying === false) {
       audioContext.resume().then(() => {
         timerWorker.postMessage('start');
-        this.setState({
-          // to avoid first note delay
-          noteTime: audioContext.currentTime + SCHEDULER_TICK/1000,
-          isPlaying: true,
-        });
+        this.#currentNoteTime = audioContext.currentTime + SCHEDULER_TICK / 1000;
+        this.setState({ isPlaying: true });
       });
     } else {
       timerWorker.postMessage('stop');
-      this.setState({
-        idxCurrent16thNote: 0,
-        isPlaying: false,
-      });
+      this.#current16thNote = 0;
+      this.setState({ idxCurrent16thNote: 0, isPlaying: false });
     }
   }
 
   schedule() {
     while (
-      this.state.noteTime < audioContext.currentTime + SCHEDULER_LOOK_AHEAD
+      this.#currentNoteTime < audioContext.currentTime + SCHEDULER_LOOK_AHEAD
     ) {
-      this.scheduleSound( this.state.idxCurrent16thNote, this.state.noteTime );
+      this.scheduleSound( this.#current16thNote, this.#currentNoteTime );
       this.setNextNoteTime();
     }
+    // ループを抜けた後、UI描画用にstateを1回だけ更新する
+    this.setState( { idxCurrent16thNote: this.#current16thNote })
   }
 
   scheduleSound(idxNote: number, time: number) {
@@ -208,17 +209,14 @@ class RhythmSequencer extends React.Component<any, any> {
     // 60[seconds] / bpm / 4[notes per beat]
     const secondsPerNote = 15.0 / this.state.bpm;
     const swingRateCorrection =
-        this.state.idxCurrent16thNote % 2 === 0 ?
+        this.#current16thNote % 2 === 0 ?
         1 + this.state.swing/(100 * 3) : 1 - this.state.swing/(100 * 3);
-    this.setState({
-      noteTime: this.state.noteTime + secondsPerNote * swingRateCorrection,
-      idxCurrent16thNote: (this.state.idxCurrent16thNote + 1) % 16,
-    });
+    this.#currentNoteTime += secondsPerNote * swingRateCorrection;
+    this.#current16thNote = (this.#current16thNote + 1) % 16;
   }
 }
 // ========================================
 
-ReactDOM.render(
-    <RhythmSequencer />,
-    document.getElementById('root'),
-);
+const container = document.getElementById('app');
+const root = createRoot(container!);
+root.render(<RhythmSequencer />)
