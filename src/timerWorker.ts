@@ -5,13 +5,13 @@ let timerID: number | undefined;
 let interval = 25;
 
 function startTick() {
-  timerID = setInterval(() => worker.postMessage('tick'), interval);
+  timerID = setInterval(() => worker.postMessage("tick"), interval);
 }
 
-type SchedulingData = string | { interval: number }
+type SchedulingData = string | { interval: number };
 
-worker.addEventListener('message', (event: MessageEvent<SchedulingData>) => {
-  const data = event.data
+worker.addEventListener("message", (event: MessageEvent<SchedulingData>) => {
+  const data = event.data;
   if (typeof data === "object" && data !== null) {
     interval = data.interval;
     console.log(`set interval. interval: ${interval}ms`);
@@ -19,9 +19,9 @@ worker.addEventListener('message', (event: MessageEvent<SchedulingData>) => {
       clearInterval(timerID);
       startTick(); // replace existing timer, if already ticking.
     }
-  } else if (data === 'start') {
+  } else if (data === "start") {
     startTick();
-  } else if (data === 'stop') {
+  } else if (data === "stop") {
     clearInterval(timerID);
     timerID = undefined;
   }
