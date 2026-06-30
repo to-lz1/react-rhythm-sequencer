@@ -38,7 +38,7 @@
     "oxfmt": "^0.44.0",
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.58.1",
-    "vite": "^6.4.2"
+    "vite": "^6.4.3"
   },
   "engines": {
     "node": ">=25.9.0"
